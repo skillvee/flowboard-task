@@ -1,0 +1,159 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================================================
+// USER MODEL
+// ============================================================================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  avatarUrl String?
+  role      String   @default("member") // "admin" | "member"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  ownedProjects   Project[]        @relation("ProjectOwner")
+  projectMembers  ProjectMember[]
+  assignedTasks   Task[]           @relation("TaskAssignee")
+  createdTasks    Task[]           @relation("TaskCreator")
+  comments        Comment[]
+  activities      Activity[]
+}
+
+// ============================================================================
+// PROJECT MODELS
+// ============================================================================
+
+model Project {
+  id          String    @id @default(cuid())
+  name        String
+  description String?   @db.Text
+  status      String    @default("active") // "active" | "archived" | "completed"
+  dueDate     DateTime?
+  ownerId     String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  owner    User            @relation("ProjectOwner", fields: [ownerId], references: [id])
+  members  ProjectMember[]
+  tasks    Task[]
+  activity Activity[]
+}
+
+model ProjectMember {
+  id        String   @id @default(cuid())
+  projectId String
+  userId    String
+  role      String   @default("member") // "admin" | "member" | "viewer"
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+}
+
+// ============================================================================
+// TASK MODELS
+// ============================================================================
+
+model Task {
+  id          String    @id @default(cuid())
+  projectId   String
+  title       String
+  description String?   @db.Text
+  status      String    @default("todo") // "todo" | "in_progress" | "review" | "done"
+  priority    String    @default("medium") // "low" | "medium" | "high" | "urgent"
+  dueDate     DateTime?
+  assigneeId  String?
+  creatorId   String
+  position    Int       @default(0) // For ordering within a status column
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  project  Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee User?     @relation("TaskAssignee", fields: [assigneeId], references: [id])
+  creator  User      @relation("TaskCreator", fields: [creatorId], references: [id])
+  comments Comment[]
+  labels   TaskLabel[]
+  activity Activity[]
+}
+
+model Label {
+  id        String @id @default(cuid())
+  name      String
+  color     String // Hex color code
+
+  createdAt DateTime @default(now())
+
+  tasks TaskLabel[]
+}
+
+model TaskLabel {
+  id      String @id @default(cuid())
+  taskId  String
+  labelId String
+
+  task  Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  label Label @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, labelId])
+}
+
+// ============================================================================
+// COMMENT MODEL
+// ============================================================================
+
+model Comment {
+  id       String  @id @default(cuid())
+  taskId   String
+  authorId String
+  content  String  @db.Text
+  parentId String? // For threaded comments
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  task    Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author  User      @relation(fields: [authorId], references: [id])
+  parent  Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  replies Comment[] @relation("CommentReplies")
+}
+
+// ============================================================================
+// ACTIVITY MODEL (Audit Log)
+// ============================================================================
+
+model Activity {
+  id        String  @id @default(cuid())
+  type      String  // "task_created" | "task_updated" | "task_assigned" | "comment_added" | etc.
+  projectId String?
+  taskId    String?
+  userId    String
+  metadata  Json?   // Additional context about the activity
+
+  createdAt DateTime @default(now())
+
+  // Relations
+  project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  task    Task?    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user    User     @relation(fields: [userId], references: [id])
+}
