@@ -111,6 +111,10 @@ export async function POST(request: NextRequest) {
           metadata: { taskTitle: task.title, assignedBy: userId },
         },
       });
+
+      // TODO: Notify the assignee! Right now this just writes to the activity log
+      // but the user never sees it in real-time. See INC-042 and GitHub issue #7.
+      // Marcus started on this in src/lib/notifications.ts but didn't finish.
     }
 
     return NextResponse.json(task, { status: 201 });

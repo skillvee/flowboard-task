@@ -107,6 +107,9 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
           },
         },
       });
+
+      // TODO: Same issue as POST — assignee doesn't know they've been assigned.
+      // Need to create a notification here too. See src/lib/notifications.ts
     }
 
     // If status changed to done, create completion activity
