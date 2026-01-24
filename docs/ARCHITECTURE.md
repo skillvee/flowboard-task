@@ -138,15 +138,28 @@ Run tests with:
 npm run test
 ```
 
-## Future Considerations
+## Known Gaps
 
-### Real-time Features
+### Real-time Updates
 
-For the notification system task, consider:
+The app currently has no real-time update mechanism. All data is fetched on page load or via manual API calls. This means:
 
-1. **WebSockets**: For bi-directional real-time updates
-2. **Server-Sent Events (SSE)**: For uni-directional updates
-3. **Polling**: As a fallback mechanism
+- Task assignment changes don't propagate to the UI until refresh
+- The activity feed is only updated on page navigation
+- The bell icon in the header is non-functional (placeholder)
+
+Marcus (previous contractor) explored Server-Sent Events but ran into Vercel serverless limitations. His notes are in `src/lib/notifications.ts`. See also `docs/INCIDENTS.md` for the business impact of this gap.
+
+### Authentication
+
+Authentication is stubbed out — API routes use a hardcoded `temp-user-id`. There are TODO comments marking where session-based auth should go. This is a known limitation but not the current priority.
+
+## Deployment Notes
+
+- Hosted on **Vercel** (Hobby plan currently, Pro plan pending budget approval)
+- Vercel serverless functions have a **10-second timeout** on the Hobby plan
+- **Edge Runtime** is available and has a longer timeout (up to 30s), but requires edge-compatible dependencies
+- Database is hosted on Neon (serverless PostgreSQL)
 
 ### Caching
 
