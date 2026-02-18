@@ -21,7 +21,7 @@ FlowBoard is a real-time project tracking platform built by TechFlow Inc. This r
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/skillvee/flowboard-task.git
+   git clone <your-repo-url>
    cd flowboard-task
    ```
 
@@ -90,20 +90,19 @@ flowboard/
 - **Projects**: Create and manage projects with descriptions and deadlines
 - **Tasks**: Create, assign, and track tasks within projects
 - **Team Members**: Manage team members and assignments
-- **Comments**: Discuss tasks with threaded comments
+- **Comments**: Discuss tasks with threaded replies
 - **Activity Feed**: Track all changes across the platform
 
-## Current Task
+## Documentation
 
-You have been assigned to implement a **real-time notification system**. See the [TASK.md](./TASK.md) file for full requirements.
+- [Architecture Overview](./docs/ARCHITECTURE.md)
+- [API Reference](./docs/API.md)
+- [Contributing Guide](./docs/CONTRIBUTING.md)
+- [Incident Log](./docs/INCIDENTS.md)
 
 ## Contributing
 
-1. Create a feature branch from `main`
-2. Make your changes
-3. Run tests: `npm run test`
-4. Run linting: `npm run lint`
-5. Submit a pull request
+See [CONTRIBUTING.md](./docs/CONTRIBUTING.md) for code style, branching, and PR guidelines.
 
 ## License
 

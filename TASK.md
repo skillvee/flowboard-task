@@ -1,62 +1,49 @@
-# Task: Real-Time Notification System
+# Welcome to FlowBoard
 
-## Overview
+Hey! Welcome to the team. Here's a quick rundown to get you oriented.
 
-Implement a real-time notification system for FlowBoard. Users should receive notifications when they are assigned to tasks, and these notifications should appear instantly without requiring a page refresh.
+## Your First Day
 
-## Requirements
+Your manager will brief you on what you'll be working on — check Slack for their message. They'll point you to the right issue on GitHub.
 
-### Core Functionality
+## Getting Set Up
 
-1. **Notification Creation**
-   - When a user is assigned to a task, create a notification
-   - Notifications should include: title, message, type, and link to the relevant task
+1. Clone the repo and install dependencies:
+   ```bash
+   npm install
+   ```
 
-2. **Real-Time Delivery**
-   - Notifications should appear instantly in the UI
-   - Use WebSockets or Server-Sent Events for real-time updates
-   - Fallback to polling if real-time connection fails
+2. Set up your database:
+   ```bash
+   cp .env.example .env
+   # Update .env with your database connection string
+   npm run db:generate
+   npm run db:push
+   npm run db:seed
+   ```
 
-3. **Notification Center**
-   - Bell icon in the header showing unread count
-   - Dropdown panel listing recent notifications
-   - Mark individual notifications as read
-   - "Mark all as read" functionality
+3. Start the dev server:
+   ```bash
+   npm run dev
+   ```
 
-4. **API Endpoints**
-   - `POST /api/notifications` - Create a notification
-   - `GET /api/notifications` - Fetch user notifications (paginated)
-   - `PATCH /api/notifications/:id` - Mark notification as read
-   - `PATCH /api/notifications/read-all` - Mark all as read
+4. Open [http://localhost:3000](http://localhost:3000)
 
-5. **Database Schema**
-   - Add a `Notification` model to store notifications
-   - Link notifications to users and optionally to tasks
+## How We Work
 
-## Acceptance Criteria
+- Check the GitHub Issues for your assignment
+- Review `docs/` for architecture and API documentation
+- Ask your teammates on Slack if you get stuck — that's what they're there for
+- When you're done, open a PR and give your manager a call to walk through it
 
-- [ ] Notification is created when a task is assigned
-- [ ] Notifications appear in real-time without page refresh
-- [ ] Notification bell shows accurate unread count
-- [ ] Users can mark notifications as read (individually and all)
-- [ ] API endpoints are properly authenticated
-- [ ] Notifications are paginated (default: 20 per page)
-- [ ] All existing tests still pass
-- [ ] New functionality has test coverage
+## Useful Commands
 
-## Technical Notes
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server |
+| `npm run test` | Run tests |
+| `npm run lint` | Run linter |
+| `npm run typecheck` | Type check |
+| `npm run db:seed` | Reset seed data |
 
-- The existing `Task` model has an `assigneeId` field you can use
-- Consider using the existing WebSocket infrastructure if available, or add a simple SSE endpoint
-- The UI should follow the existing design patterns (see `components/ui/`)
-- Browser notifications are a stretch goal, not required
-
-## Resources
-
-- Prisma schema: `prisma/schema.prisma`
-- Existing API patterns: `src/app/api/`
-- UI components: `src/components/ui/`
-
-## Questions?
-
-If anything is unclear, feel free to ask your coworkers or manager!
+Good luck! 🚀
